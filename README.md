@@ -1,7 +1,7 @@
 # Blog
 个人博客实现
 
-springboot + themleaf + mysql + maven + springJPA
+springboot + themleaf + mysql + maven + springJPA + Semantic UI
 
 # 前端展示
 
