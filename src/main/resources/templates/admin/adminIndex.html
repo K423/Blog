@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>博客管理</title>
+    <!-- <link rel="stylesheet" href="./static/css/semantic.min.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+    <link rel="stylesheet" href="../../static/css/style.css" th:href="@{/css/style.css}">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="../../staticjs/semantic.min.js" th:src="@{/js/semantic.min.js}"></script>
+</head>
+
+<body>
+    <!-- 导航 -->
+    <nav class="ui inverted attached segment nav-padded nav-shadow">
+        <div class="ui container">
+            <div class="ui inverted secondary stackable menu">
+                <h2 class="ui teal header item">Blog管理</h2>
+                <a href="#" class="active show item mobile-hidden"><i class="home icon"></i>首页</a>
+                <a href="#" th:href="@{/admin/types}" class="show item mobile-hidden"><i class="idea icon"></i>分类</a>
+                <a href="#" th:href="@{/admin/tags}" class="show item mobile-hidden"><i class="tags icon"></i>标签</a>
+                <!-- <a href="#" class="show item mobile-hidden"><i class="clone icon"></i>归档</a>
+                <a href="#" class="show item mobile-hidden"><i class="info icon"></i>关于</a> -->
+                <div class="right menu">
+                    <!-- <div class="ui icon inverted transparent input">
+                        <input type="text" placeholder="Search....">
+                        <i class="search link icon"></i>
+                    </div> -->
+                    <div class="show ui dropdown item mobile-hidden">
+                        <div class="text">
+                            <img src="https://picsum.photos/120/120" alt="" class="ui avatar image" th:src="@{${session.user.avatar}}">
+                            <span th:text="${session.user.nickname}">三月七</span>
+                        </div>
+                        <i class="dropdown icon"></i>
+                        <div class="menu">
+                            <a href="/admin/logout" class="item">退出</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a href="#" class="ui black icon button right-top mobile-show btShow">
+            <i class="sidebar icon"></i>
+        </a>
+    </nav>
+    <div class="ui menu">
+        <div class="ui container">
+            <div class="right menu">
+                <a href="#" class="active item">列表</a>
+                <a href="/admin/issue" class="item">发布</a>
+            </div>
+        </div>
+    </div>
+    <!-- 中间内容 -->
+    <div class="margin-large" style="min-height: 420px">
+        <div class="ui success message" th:unless="${#strings.isEmpty(message)}" style="max-width: 300px; margin: -20px auto 15px auto">
+            <i class="close icon"></i>
+            <div class="header">提示: </div>
+            <p th:text="${message}"></p>
+        </div>
+        <div class="ui container">
+            <div class="ui segment form">
+                <input type="hidden" name="page" id="">
+                <div class="inline fields">
+                    <div class="field">
+                        <input type="text" name="title" placeholder="标题" style="width: 400px">
+                    </div>
+                    <div class="field">
+                        <div class="ui selection dropdown">
+                            <input type="hidden" name="typeId">
+                            <i class="dropdown icon"></i>
+                            <div class="default text">分类</div>
+                            <div class="menu">
+                                <div th:each="type : ${types}" class="item" data-value="1" th:data-value="${type.id}" th:text="${type.name}">日志</div>
+<!--                                <div class="item" data-value="2">开发手册</div>-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui checkbox">
+                            <input type="checkbox" id="recommended" name="recommended">
+                            <label for="recommended">推荐</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <button type="button" id="search" class="ui mini teal basic button"><i class="search icon"></i>搜索</button>
+                    </div>
+                </div>
+            </div>
+            <div id="table-container">
+                <table th:fragment="blogList" class="ui celled table">
+                    <thead>
+                    <th></th>
+                    <th>标题</th>
+                    <th>类型</th>
+                    <th>推荐</th>
+                    <th>更新时间</th>
+                    <th>操作</th>
+                    </thead>
+                    <tbody>
+                    <tr th:each="blog, iterStat : ${page.content}">
+                        <td th:text="${iterStat.count}">1</td>
+                        <td th:text="${blog.title}">你知道吗???</td>
+                        <td th:text="${blog.type.name}"></td>
+                        <td th:text="${blog.recommended} ? '是':'否'">是</td>
+                        <td th:text="${blog.updateTime}">2023-05-01 11:23</td>
+                        <td>
+                            <a href="#" th:href="@{/admin/bloglist/{id}/edit(id=${blog.id})}" class="ui mini teal button">编辑</a>
+                            <a href="#" th:href="@{/admin/bloglist/{id}/delete(id=${blog.id})}" class="ui mini red button">删除</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th colspan="6">
+                            <div class="ui pagination menu" th:if="${page.totalPages}>1">
+                                <a onclick="page(this)" class="item" th:attr="data-page=${page.number}-1" th:unless="${page.first}">上一页</a>
+                                <a onclick="page(this)" class="item" th:attr="data-page=${page.number}+1" th:unless="${page.last}">下一页</a>
+                            </div>
+                            <a href="/admin/issue" class="ui right floated teal basic button">新增</a>
+                        </th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- 底部 -->
+    <footer class="ui inverted vertical segment">
+        <div class="ui center aligned container">
+            <h4 class="text-style-thin text-spaced text-opacity-mini" style="font-size: 12px;">Copyright@2023-2024 Blog
+                Designed by Lzh</h4>
+        </div>
+    </footer>
+</body>
+
+</html>
+
+<script>
+    $('.btShow').click(function () {
+        $('.show').toggleClass('mobile-hidden');
+    });
+    $('.qq').popup();
+    $('.ui.dropdown').dropdown({
+        on: 'hover'
+    });
+
+    function page(obj) {
+        $("[name='page']").val($(obj).data("page"));
+        loadData();
+    }
+
+
+    $("#search").click(function (){
+        // prop1 = $("[name='title']").val(),
+        prop = $("[name='typeId']").val(),
+            // console.log(typeof prop)
+        // console.log(prop1, prop)
+        $("[name='page']").val(0);
+        loadDataWithID(prop);
+        //clear
+        $('.ui.selection.dropdown').dropdown('clear')
+    });
+
+    $('.message .close')
+        .on('click', function() {
+            $(this)
+                .closest('.message')
+                .transition('fade')  //fade消失动画
+            ;
+        });
+
+    function loadData() {
+        $("#table-container").load(/*[[@{/admin/bloglist/search}]]*/"/admin/bloglist/search",{
+            title: $("[name='title']").val(),
+            typeId: $("[name='typeId]").val(),
+            recommended:$("[name='recommended']").prop('checked'),
+            page: $("[name='page']").val()
+        });
+    }
+
+    // 传入typeId 上面的函数莫名其妙传入不了typeId,只能明传了
+    function loadDataWithID(prop) {
+        $("#table-container").load(/*[[@{/admin/bloglist/search}]]*/"/admin/bloglist/search",{
+            title: $("[name='title']").val(),
+            typeId: prop,
+            recommended:$("[name='recommended']").prop('checked'),
+            page: $("[name='page']").val()
+        });
+    }
+</script>
+
+<style scoped>
+    /*body {*/
+    /*    background: url(./img/cloud.jpg);*/
+    /*    !* background: #749ae07a; *!*/
+    /*    !* background-size: cover cover; *!*/
+
+    /*}*/
+
+    .ui.segment {
+        background: #7691b31a;
+    }
+
+    img.ui.image {
+        display: inline-block;
+    }
+
+    .ui.list .list>.item .header,
+    .ui.list>.item .header {
+        display: block;
+        margin: 0;
+        font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        font-weight: 700;
+        color: rgb(79 146 161 / 87%);
+    }
+
+    .ui.link.list .item,
+    .ui.link.list .item a:not(.ui),
+    .ui.link.list a.item {
+        color: rgb(190 213 237 / 40%);
+        -webkit-transition: .1s color ease;
+        transition: .1s color ease;
+    }
+
+    .ui.attached.segment {
+        border: 0;
+    }
+
+    .ui.vertical.menu {
+        background: #9495a77a;
+    }
+
+    .ui.basic.label {
+        background: none #a1abdb;
+    }
+</style>

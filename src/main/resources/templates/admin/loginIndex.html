@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首页</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+    <link rel="stylesheet" href="css/style.css" th:href="@{/css/style.css}">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="js/semantic.min.js" th:src="@{/js/semantic.min.js}"></script>
+</head>
+
+<body>
+<!-- 导航 -->
+<nav class="ui inverted attached segment nav-padded nav-shadow">
+    <div class="ui container">
+        <div class="ui inverted secondary stackable menu">
+            <h2 class="ui teal header item">Blog管理</h2>
+            <a href="/admin/bloglist" class="show item mobile-hidden"><i class="home icon"></i>首页</a>
+            <a href="#" th:href="@{/admin/types}" class="show item mobile-hidden"><i class="idea icon"></i>分类</a>
+            <a href="#" th:href="@{/admin/tags}" class="show item mobile-hidden"><i class="tags icon"></i>标签</a>
+            <!-- <a href="#" class="show item mobile-hidden"><i class="clone icon"></i>归档</a>
+            <a href="#" class="show item mobile-hidden"><i class="info icon"></i>关于</a> -->
+            <div class="right menu">
+                <!-- <div class="ui icon inverted transparent input">
+                    <input type="text" placeholder="Search....">
+                    <i class="search link icon"></i>
+                </div> -->
+                <div class="show ui dropdown item mobile-hidden">
+                    <div class="text">
+                        <img src="https://picsum.photos/120/120" alt="" class="ui avatar image" th:src="@{${session.user.avatar}}">
+                        <span th:text="${session.user.nickname}">三月七</span>
+                    </div>
+                    <i class="dropdown icon"></i>
+                    <div class="menu">
+                        <a href="/admin/logout" class="item">退出</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a href="#" class="ui black icon button right-top mobile-show btShow">
+        <i class="sidebar icon"></i>
+    </a>
+</nav>
+<div class="ui menu">
+    <div class="ui container">
+        <div class="right menu">
+            <a href="/admin/bloglist" class="item">列表</a>
+            <a href="/admin/issue" class="item">发布</a>
+        </div>
+    </div>
+</div>
+<!-- 中间内容 -->
+<div class="margin-large" style="min-height: 420px; width: 60%; margin: auto">
+    <div class="ui center aligned container">
+        <div class="ui large message">
+            <h3>欢迎回来</h3>
+            <p><span th:text="${session.user.nickname}">三月七</span></p>
+        </div>
+        <img src="https://picsum.photos/600/400" class="ui rounded bordered image" style="display: inline-block">
+    </div>
+</div>
+<!-- 底部 -->
+<footer class="ui inverted vertical segment">
+    <div class="ui center aligned container">
+        <h4 class="text-style-thin text-spaced text-opacity-mini" style="font-size: 12px;">Copyright@2023-2024 Blog
+            Designed by Lzh</h4>
+    </div>
+</footer>
+</body>
+
+</html>
+
+<script>
+    $('.btShow').click(function () {
+        $('.show').toggleClass('mobile-hidden');
+    });
+    $('.qq').popup();
+    $('.ui.dropdown').dropdown({
+        on: 'hover'
+    })
+</script>
+
+<style scoped>
+    body {
+        /*background: url(./img/cloud.jpg);*/
+        /* background: #749ae07a; */
+        /* background-size: cover cover; */
+
+    }
+
+    .ui.segment {
+        background: #7691b31a;
+    }
+
+    img.ui.image {
+        display: inline-block;
+    }
+
+    .ui.list .list>.item .header,
+    .ui.list>.item .header {
+        display: block;
+        margin: 0;
+        font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        font-weight: 700;
+        color: rgb(79 146 161 / 87%);
+    }
+
+    .ui.link.list .item,
+    .ui.link.list .item a:not(.ui),
+    .ui.link.list a.item {
+        color: rgb(190 213 237 / 40%);
+        -webkit-transition: .1s color ease;
+        transition: .1s color ease;
+    }
+
+    .ui.attached.segment {
+        border: 0;
+    }
+
+    .ui.vertical.menu {
+        background: #9495a77a;
+    }
+
+    .ui.basic.label {
+        background: none #a1abdb;
+    }
+</style>
+
